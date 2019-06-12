@@ -51,7 +51,7 @@ webpack 打包有四個核心概念
 
 - entry: 模組打包的進入點，預設值是 `./src`，webpack 會從此檔案開始建立你的專案的 dependency
 - output: 告訴 webpack 你希望將打包完的檔案 (bundle) 輸出至哪裡
-- loader: 處理非 JavaScript 檔案檔案(.css/.vue...etc)，透過 loader 處理
+- loader: 處理非 JavaScript 檔案檔案(.css/.vue...etc)，透過 loader 預先處理 import 的模組，
 - plugins: 打包優化和壓縮，到重新定義環境中的變數，處理各式各樣的任務，使用 plugins 時，需要 `require()` 模組。目前我有用到 `html-webpack-plugin`將打包結果注入到已存在的 html 檔、`HotModuleReplacementPlugin`自動偵測檔案變化重新打包
 
 [Reference](https://www.webpackjs.com/concepts/)
@@ -143,3 +143,66 @@ vue.runtime.esm.js:620 [Vue warn]: You are using the runtime-only build of Vue w
 - [Reference](https://vuejs.org/v2/guide/installation.html#Runtime-Compiler-vs-Runtime-only)
 
 2. 透過 `*.vue` 檔建立模板，且使用 `vue-loader` 進行編譯。
+
+   - 首先先安裝 loader & template compiler，loader 是 webpack 需要的套件，template comipler 是
+
+   ```
+   npm i vue-loader -D
+   npm i vue-template-compiler -D
+   ```
+
+   - 設定 webpack vue-loader，除了設定 loader 外，也必須加入 vue-loader 的 plugin `VueLoaderPlugin`
+
+   ```js
+   const VueLoaderPlugin = require('vue-loader/lib/plugin');
+   // ...
+   module.exports = {
+     // ...
+     // 讓 webpack import *.vue 檔的時後，使用 vue-loader 預處理
+     // 更多用法請參考 https://webpack.js.org/concepts/loaders
+     module: {
+       rules: [
+         // ...
+         {
+           test: /\.vue$/,
+           loader: 'vue-loader'
+         }
+       ]
+     },
+     plugins: [
+       // 請確保引入這個 plugin
+       new VueLoaderPlugin()
+     ]
+   };
+   ```
+
+   - 建立 `App.vue` 檔
+
+   ```html
+   <template>
+     <div>Hellow Vue loader</div>
+   </template>
+   ```
+
+   ```html
+   <script>
+     export default {
+       name: 'App'
+     };
+   </script>
+   ```
+
+   - 修改 `index.js`
+
+   ```js
+   import App from './App.vue';
+   new Vue({
+     render(h) {
+       return h(App);
+     }
+   }).$mount('#app4');
+   ```
+
+   - 優點: 除了打包出來的檔案較小之外，在載入頁面的時候，也不會出現瞬間有`{{}}`的問題，因為 component 是先被 render 完畢才嵌入 DOM。
+   - 缺點: 不適合初學者
+   - [Reference](https://vue-loader.vuejs.org/zh/guide/) 官方說明文件，其實在 component 內如果使用外部資源圖片或是有 `<style>` 設定，webpack 需要更多的 loader，目前暫不說明
