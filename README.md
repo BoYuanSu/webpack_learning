@@ -226,3 +226,36 @@ npm i webpack-dev-server -D
 
 更多功能請參考相關文件
 [Hot-Module-Replacement Guides](https://www.webpackjs.com/guides/hot-module-replacement/)
+
+## chap6
+
+其餘小功能分享
+
+### index.html 相關
+
+1. 將 `app.bundle.js` 注入 `index.html`
+   原本我們是自己在 html 用 script 引入 app.bundle.js，但 webpack 可以自動幫你注入
+
+   - 安裝套件
+
+   ```
+   npm i html-webpack-plugin -D
+   ```
+
+   - webpack config
+
+   ```js
+   const HtmlWebpackPlugin = require('html-webpack-plugin');
+   module.exports = {
+     plugins: [
+       new HtmlWebpackPlugin({
+         // 使用自訂html樣板
+         // filename 可以自訂輸出檔名，預設輸出 到 dist/index.html
+         // https://github.com/jantimon/html-webpack-plugin#options
+         template: './src/index.html'
+       })
+     ]
+   };
+   ```
+
+2.
