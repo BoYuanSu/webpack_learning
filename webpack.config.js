@@ -9,9 +9,9 @@ module.exports = {
     // 整體結果會在./dist/app.bundle.js
   },
   resolve: {
-    alias: {
-      vue$: 'vue/dist/vue.esm.js'
-    }
+    // alias: {
+    //   vue$: 'vue/dist/vue.esm.js'
+    // }
   },
   module: {
     rules: [{ test: /\.vue$/, use: 'vue-loader' }]
