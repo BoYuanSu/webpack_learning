@@ -42,3 +42,47 @@ You can also install the CLI manually.
   }
 }
 ```
+
+## chap3
+
+### webpack.config.js 檔案設置
+
+webpack 打包有四個核心概念
+
+- entry: 模組打包的進入點，預設值是 `./src`，webpack 會從此檔案開始建立你的專案的 dependency
+- output: 告訴 webpack 你希望將打包完的檔案 (bundle) 輸出至哪裡
+- loader: 處理非 JavaScript 檔案檔案(.css/.vue...etc)，透過 loader 處理
+- plugins: 打包優化和壓縮，到重新定義環境中的變數，處理各式各樣的任務，使用 plugins 時，需要 `require()` 模組。目前我有用到 `html-webpack-plugin`將打包結果注入到已存在的 html 檔、`HotModuleReplacementPlugin`自動偵測檔案變化重新打包
+
+[Reference](https://www.webpackjs.com/concepts/)
+
+接下來我們在可以在 webpack.config.js 進行下列簡單的設定，這個設定讓我們可以將 `./src/index.js` 打包並輸出至 `./dist/app.bundle.js`
+
+```js
+const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'app.bundle.js'
+  }
+};
+```
+
+### mode 開發/生產環境設定
+
+此外還有 [`mode`](https://www.webpackjs.com/concepts/mode/) 可以設定開發、正式環境，可以設定為 development 或是 production，可以針對環境自動開關一些 plugins。
+
+當打包時如果沒帶入 `mode` 的資訊，cli 也會跳出相關的警告
+
+`WARNING in configuration The 'mode' option has not been set, webpack will fallback to 'production' for this value. Set 'mode' option to 'development' or 'production' to enable defaults for each environment. You can also set it to 'none' to disable any default behavior. Learn more: https://webpack.js.org/configuration/mode/`
+
+因此我們將 npm script 加入下列的指令用來區分開發/生產環境的建置
+
+```json
+"scripts": {
+    "build": "./node_modules/.bin/webpack-cli ---config webpack.config.js --mode=production",
+    "dev": "./node_modules/.bin/webpack-cli ---config webpack.config.js --mode=development"
+  },
+```
