@@ -1,6 +1,6 @@
 # Webpack 學習紀錄
 
----
+目的：讓大家可以用 Webpack 進行 Vue 學習，熟悉未來專案開發的模式
 
 ## chap 1 安裝 Webpack
 
@@ -86,3 +86,60 @@ module.exports = {
     "dev": "./node_modules/.bin/webpack-cli ---config webpack.config.js --mode=development"
   },
 ```
+
+## chap4
+
+### 建立 Vue 開發設定
+
+首先安裝 vue，然後就可以像以前一樣，在 index.js 裡面寫 vue(嗎？
+
+```
+npm i vue -S
+```
+
+```js
+import Vue from 'vue';
+
+new Vue({
+  el: '#app',
+  data: {
+    message: 'Vue!'
+  }
+});
+```
+
+然後開啟網頁之後會發現錯誤
+
+```
+vue.runtime.esm.js:620 [Vue warn]: You are using the runtime-only build of Vue where the template compiler is not available. Either pre-compile the templates into render functions, or use the compiler-included build.
+
+(found in <Root>)
+```
+
+這是因為 webpack 預設打包 vue 不包含 template compiler 的功能，也就是說如果你的 vue instance 包含 template 的屬性(直接在 html 裡面使用模版也算)，就會發生錯誤。
+
+#### runtime-only build 解決方式
+
+1. 在 webpack 設定檔內建立別名，讓 webpack 遇到 `vue` 這個字眼時，自動辨識為 `vue/dist/vue.esm.js`，這樣 webpack 打包出來的 vue 版本就包含 template compiler 的功能。
+
+   ```js
+   module.exports = {
+     // ...
+     // 補充說明 resolve 是 webpack 打包時再 import 模組時，可以修改解析模組的方式
+     // 所以下面的意思是在 import vue 時，是去找 vue 裡面的某一支 js 進行打包
+     // '$' 表示精準匹配，所以 import vue-xxx 模組不會有影響
+     // 更多用法請參考 https://webpack.docschina.org/configuration/resolve/
+     resolve: {
+       alias: {
+         vue$: 'vue/dist/vue.esm.js' // 'vue/dist/vue.common.js' for webpack 1
+       }
+     }
+   };
+   ```
+
+   - 優點: 可以更自由的去使用 vue 建立 component 的方式，適合學習時使用
+   - 缺點: 打包出來的 js 會變大，不適合作為產品開發
+
+- [Reference](https://vuejs.org/v2/guide/installation.html#Runtime-Compiler-vs-Runtime-only)
+
+2. 透過 `*.vue` 檔建立模板，且使用 `vue-loader` 進行編譯。
