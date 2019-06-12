@@ -206,3 +206,23 @@ vue.runtime.esm.js:620 [Vue warn]: You are using the runtime-only build of Vue w
    - 優點: 除了打包出來的檔案較小之外，在載入頁面的時候，也不會出現瞬間有`{{}}`的問題，因為 component 是先被 render 完畢才嵌入 DOM。
    - 缺點: 不適合初學者
    - [Reference](https://vue-loader.vuejs.org/zh/guide/) 官方說明文件，其實在 component 內如果使用外部資源圖片或是有 `<style>` 設定，webpack 需要更多的 loader，目前暫不說明
+
+## chap5
+
+使用了 webpack 開發之後，會需要開始為每次更動進行重新編譯，為了解決這個麻煩，webpack 提供了 熱重載
+
+```
+npm i webpack-dev-server -D
+```
+
+只要安裝完成即可使用，因此我們將 npm script 改寫
+
+```json
+"scripts": {
+    "build": "./node_modules/.bin/webpack-cli --config webpack.config.js --mode=production",
+    "dev": "./node_modules/.bin/webpack-dev-server --config webpack.config.js --mode=development"
+  },
+```
+
+更多功能請參考相關文件
+[Hot-Module-Replacement Guides](https://www.webpackjs.com/guides/hot-module-replacement/)
