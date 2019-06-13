@@ -258,4 +258,19 @@ npm i webpack-dev-server -D
    };
    ```
 
-2.
+2. webpack 打包如果是 production mode，會自動做 minify js code，但是其他像是 css/image 壓縮就需要 Optimize CSS Assets Webpack Plugin，來處理
+
+3. Vue 在 production 環境要關閉 Dev Tools `Vue.config.devtools = false`，所以 Webpack 打包時可以透過 `process.env.NODE_ENV` 來判斷是否要開關 Dev Tools
+
+```js
+// 切換開發或是正視環境時，關閉 vue devtools
+if (process.env.NODE_ENV == 'development') {
+  Vue.config.devtools = true;
+  Vue.config.silent = false;
+  Vue.config.productionTip = true;
+} else {
+  Vue.config.devtools = false; // 網頁的開發者模式要重開，devtools才會消失
+  Vue.config.silent = true; // Suppress all Vue logs and warnings.
+  Vue.config.productionTip = false; //Set this to false to prevent the production tip on Vue startup.
+}
+```
