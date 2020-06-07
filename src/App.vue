@@ -1,5 +1,5 @@
 <template>
-  <div>Hellow Vue loader</div>
+  <div>Hellow Vue loader fhefuyh</div>
 </template>
 
 <script>

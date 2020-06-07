@@ -19,5 +19,7 @@
     "webpack-cli": "^3.3.4",
     "webpack-dev-server": "^3.7.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3"
+  }
 }
